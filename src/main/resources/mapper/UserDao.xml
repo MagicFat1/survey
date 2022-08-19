@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liubo.query.mapper.UserDao">
+    <insert id="insert">
+        INSERT INTO inform
+        (username, age, cardid)
+        SELECT #{username}, #{age}, #{cardId} FROM dual
+        WHERE not exists (select id from inform where username = #{username} and cardid = #{cardId})
+    </insert>
+    <update id="update">
+        update inform
+        <set>
+            <if test="username != null">
+                username = #{username},
+            </if>
+            <if test="age != null">
+                age = #{age},
+            </if>
+            <if test="cardId != null">
+                cardid = #{cardId}
+            </if>
+        </set>
+        <where>
+            id = #{id}
+        </where>
+    </update>
+</mapper>

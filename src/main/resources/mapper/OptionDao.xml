@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liubo.query.mapper.OptionDao">
+    <resultMap type="com.liubo.query.entity.Option" id="Option">
+        <id column="id" property="id"/>
+        <result column="question_id" 			property="questionId"/>
+        <result column="survey_id" 			property="surveyId"/>
+        <result column="opt" 			property="opt"/>
+        <result column="describe" 			property="describe"/>
+        <result column="orderby" 			property="orderby"/>
+        <result column="score" 			property="score"/>
+    </resultMap>
+    <sql id="OptionFindCriteria">
+        <where>
+            <if test="id != null">and id = #{id}</if>
+            <if test="questionId != null">and question_id = #{questionId}</if>
+            <if test="surveyId != null">and survey_id = #{surveyId}</if>
+            <if test="opt != null">and opt = #{opt}</if>
+            <if test="opt != null">and `describe` = #{describe}</if>
+            <if test="orderby != null">and orderby = #{orderby}</if>
+            <if test="score!= null">and score = #{score}</if>
+        </where>
+    </sql>
+    <insert id="create">
+        INSERT INTO `option`
+        (id,question_id,survey_id,opt,`describe`,orderby,score)
+        SELECT #{id},#{questionId},#{surveyId},#{opt},#{describe},#{orderby},#{score} FROM dual
+        WHERE not exists (select id from `option` where survey_id = #{surveyId} and question_id = #{questionId} and
+        orderby = #{orderby})
+    </insert>
+
+    <update id="update">
+        UPDATE `option`
+        <set>
+            <if test="questionId != null">
+                question_id = #{questionId},
+            </if>
+            <if test="surveyId != null">
+                survey_id = #{surveyId},
+            </if>
+            <if test="opt != null">
+                opt = #{opt},
+            </if>
+            <if test="describe != null">
+                `describe` = #{describe},
+            </if>
+            <if test="orderby != null">
+                orderby = #{orderby},
+            </if>
+            <if test="score != null">
+                score = #{score}
+            </if>
+        </set>
+        <where>
+            <if test="id != null">and id = #{id}</if>
+        </where>
+    </update>
+    <update id="updateByQuestion">
+        UPDATE `option`
+        <set>
+            <if test="questionId != null">
+                question_id = #{questionId},
+            </if>
+            <if test="surveyId != null">
+                survey_id = #{surveyId},
+            </if>
+            <if test="opt != null">
+                opt = #{opt},
+            </if>
+            <if test="describe != null">
+                `describe` = #{describe},
+            </if>
+            <if test="orderby != null">
+                orderby = #{orderby},
+            </if>
+            <if test="score != null">
+                score = #{score}
+            </if>
+        </set>
+        <where>
+            <if test="surveyId != null and questionId != null and orderby != null">
+                and ((survey_id = #{surveyId} and question_id = #{questionId} and orderby = #{orderby}))</if>
+        </where>
+    </update>
+    <delete id="delete">
+        DELETE from `option`
+        <where>
+            <if test="id != null">and id = #{id}</if>
+        </where>
+    </delete>
+    <delete id="deleteByQuestionId">
+        DELETE from `option`
+        <where>
+            <if test="surveyId != null and questionId != null">
+            and (survey_id = #{surveyId} and question_id = #{questionId})</if>
+        </where>
+    </delete>
+    <select id="findAll" resultMap="Option">
+        SELECT * FROM `option`
+        order by survey_id, question_id, orderby
+    </select>
+    <select id="detail" resultMap="Option">
+        SELECT * FROM `option`
+        <where>
+            <if test="id != null">and id = #{id} </if>
+            <if test="questionId != null and orderby != null">or (question_id = #{questionId} and orderby = #{orderby}) </if>
+        </where>
+    </select>
+    <select id="details" resultMap="Option">
+        SELECT * FROM `option`
+        <where>
+            <if test="surveyId != null and questionId != null ">and (survey_id = #{surveyId} and question_id = #{questionId}) </if>
+        </where>
+    </select>
+    <select id="score" resultType="java.lang.Integer">
+        SELECT score FROM `option`
+        <where>
+            <if test="surveyId != null and questionId != null and opt != null">
+            and (survey_id = #{surveyId} and question_id = #{questionId} and opt = #{opt}) </if>
+        </where>
+    </select>
+
+</mapper>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liubo.query.mapper.ScoresDao">
+    <resultMap type="com.liubo.query.entity.Scores" id="Scores">
+        <id column="id" property="id"/>
+        <result column="title" 			property="title"/>
+        <result column="score" 			property="score"/>
+        <result column="remark" 			property="remark"/>
+        <result column="user_id" 			property="userId"/>
+    </resultMap>
+    <insert id="create">
+        INSERT INTO scores
+        (id, title,score, remark,user_id)
+        VALUES (#{id}, #{title}, #{score}, #{remark}, #{userId})
+    </insert>
+
+</mapper>

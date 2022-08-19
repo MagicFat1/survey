@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liubo.query.mapper.SurveyDao">
+    <sql id="SurveyFindCriteria">
+        <where>
+            <if test="id != null and id != ''">and id = #{id}</if>
+            <if test="title != null and title != ''">and title like concat('%',#{title},'%')</if>
+        </where>
+    </sql>
+    <update id="update">
+        update survey
+        <set>
+            <if test="id != null  and id != ''">id = #{id},</if>
+            <if test="title != null and title != ''">title = #{title}</if>
+        </set>
+        <where>
+        <if test="id != null and id != ''">and id = #{id}</if>
+        </where>
+    </update>
+    <delete id="delete">
+        DELETE from survey
+        <include refid="SurveyFindCriteria"/>
+    </delete>
+    <select id="getSurveyId" resultType="java.lang.Integer">
+        SELECT id from survey
+        <where>
+            <if test="title != null">and title = #{title}</if>
+        </where>
+    </select>
+    <select id="returnTitle" resultType="java.lang.String">
+        SELECT title from survey
+        <where>
+            <if test="surveyId != null">and id= #{surveyId}</if>
+        </where>
+    </select>
+</mapper>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liubo.query.mapper.AnswerDao">
+    <resultMap type="com.liubo.query.entity.Answer" id="Answer">
+        <id column="id" property="id"/>
+        <result column="survey_id" 			property="surveyId"/>
+        <result column="question_id" 			property="questionId"/>
+        <result column="user_id" 			property="userId"/>
+        <result column="result" 			property="result"/>
+        <result column="type" 			property="type"/>
+    </resultMap>
+    <insert id="create">
+        INSERT INTO answer (
+        id, survey_id, question_id, user_id, result, `type`)
+        SELECT #{id}, #{surveyId}, #{questionId}, #{userId}, #{result}, #{type} FROM dual
+        WHERE not exists (select id from answer where survey_id = #{surveyId} and question_id = #{questionId} and
+        user_id = #{userId})
+    </insert>
+    <update id="update">
+        UPDATE answer
+        <set>
+            <if test="id != null">
+                id = #{id},
+            </if>
+            <if test="surveyId != null">
+                survey_id = #{surveyId},
+            </if>
+            <if test="questionId != null">
+                question_id = #{questionId},
+            </if>
+            <if test="userId != null">
+                user_id = #{userId},
+            </if>
+            <if test="result != null">
+                result = #{result},
+            </if>
+            <if test="type != null">
+                `type` = #{type},
+            </if>
+        </set>
+        <where>
+            <if test="surveyId != null and questionId != null">
+                and ((survey_id = #{surveyId} and question_id = #{questionId}))</if>
+        </where>
+    </update>
+    <delete id="deleteById">
+        DELETE from answer
+        <where>
+            <if test="id != null">and id = #{id}</if>
+        </where>
+    </delete>
+    <select id="query" resultMap="Answer">
+        SELECT * FROM answer
+        <where>
+            <if test="surveyId != null">and survey_id = #{surveyId}</if>
+        </where>
+    </select>
+    <select id="detail" resultMap="Answer">
+        SELECT * FROM answer
+        <where>
+            <if test="surveyId != null and questionId != null">
+                and (survey_id = #{surveyId} and question_id = #{questionId})</if>
+        </where>
+    </select>
+    <select id="getAnswer" resultType="java.lang.String">
+        SELECT result FROM answer
+        <where>
+            <if test="surveyId != null and questionId != null and userId != null">
+                and (survey_id = #{surveyId} and question_id = #{questionId} and user_id = #{userId})</if>
+        </where>
+    </select>
+
+
+</mapper>
